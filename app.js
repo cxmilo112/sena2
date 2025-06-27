@@ -18,33 +18,40 @@ function mostrarApp(user) {
 
 function cargarDatos() {
   fetch(URL)
-    .then(res => res.json())
+    .then(res => {
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return res.json();
+    })
     .then(data => {
       const tbody = document.querySelector('#tablaAprendices tbody');
       tbody.innerHTML = '';
-      data.forEach(item => {
+      (Array.isArray(data) ? data : []).forEach(item => {
         const tr = document.createElement('tr');
-        if (item.estadoAprendiz === 'Retiro Voluntario') {
+        if (item.ESTADO_APRENDIZ === 'Retiro Voluntario') {
           tr.classList.add('resaltado');
         }
         tr.innerHTML = `
-          <td>${item.nombreAprendiz}</td>
-          <td><a href="#" onclick='guardarFicha(${JSON.stringify(item)})'>${item.codigoFicha}</a></td>
-          <td>${item.nombrePrograma}</td>
-          <td>${item.nivelFormacion}</td>
-          <td>${item.estadoAprendiz}</td>
-          <td>${item.estadoFicha}</td>
+          <td>${item.NOMBRE_APRENDIZ}</td>
+          <td><a href="#" onclick='guardarFicha(${JSON.stringify(item)})'>${item.CODIGO_FICHA}</a></td>
+          <td>${item.PROGRAMA}</td>
+          <td>${item.NIVEL_FORMACION}</td>
+          <td>${item.ESTADO_APRENDIZ}</td>
+          <td>${item.ESTADO_FICHA}</td>
         `;
         tbody.appendChild(tr);
       });
+    })
+    .catch(err => {
+      console.error('Error al cargar JSON:', err);
+      alert('No se pudieron cargar los datos. Revisa la consola.');
     });
 }
 
 function guardarFicha(item) {
-  localStorage.setItem('codigoFicha', item.codigoFicha);
-  localStorage.setItem('nombrePrograma', item.nombrePrograma);
-  localStorage.setItem('nivelFormacion', item.nivelFormacion);
-  localStorage.setItem('estadoFicha', item.estadoFicha);
+  localStorage.setItem('codigoFicha', item.CODIGO_FICHA);
+  localStorage.setItem('nombrePrograma', item.PROGRAMA);
+  localStorage.setItem('nivelFormacion', item.NIVEL_FORMACION);
+  localStorage.setItem('estadoFicha', item.ESTADO_FICHA);
   alert('Ficha guardada correctamente');
 }
 
@@ -58,3 +65,4 @@ window.onload = () => {
   const user = localStorage.getItem('usuario');
   if (user) mostrarApp(user);
 };
+
