@@ -1,3 +1,4 @@
+console.log("JS cargado correctamente");
 const URL = 'SENACTPI.matriculados.json';
 
 function validarLogin() {
