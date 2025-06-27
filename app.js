@@ -18,23 +18,20 @@ function mostrarApp(user) {
 
 function cargarDatos() {
   fetch(URL)
-    .then(res => {
-      if (!res.ok) throw new Error('HTTP ' + res.status);
-      return res.json();
-    })
+    .then(res => res.json())
     .then(data => {
       const tbody = document.querySelector('#tablaAprendices tbody');
       tbody.innerHTML = '';
-      (Array.isArray(data) ? data : []).forEach(item => {
+      data.forEach(item => {
         const tr = document.createElement('tr');
         if (item.ESTADO_APRENDIZ === 'Retiro Voluntario') {
           tr.classList.add('resaltado');
         }
         tr.innerHTML = `
-          <td>${item.NOMBRE_APRENDIZ}</td>
-          <td><a href="#" onclick='guardarFicha(${JSON.stringify(item)})'>${item.CODIGO_FICHA}</a></td>
+          <td>${item.NOMBRE} ${item.PRIMER_APELLIDO} ${item.SEGUNDO_APELLIDO}</td>
+          <td><a href="#" onclick='guardarFicha(${JSON.stringify(item)})'>${item.FICHA}</a></td>
           <td>${item.PROGRAMA}</td>
-          <td>${item.NIVEL_FORMACION}</td>
+          <td>${item.NIVEL_DE_FORMACION}</td>
           <td>${item.ESTADO_APRENDIZ}</td>
           <td>${item.ESTADO_FICHA}</td>
         `;
@@ -43,14 +40,14 @@ function cargarDatos() {
     })
     .catch(err => {
       console.error('Error al cargar JSON:', err);
-      alert('No se pudieron cargar los datos. Revisa la consola.');
+      alert('No se pudieron cargar los datos.');
     });
 }
 
 function guardarFicha(item) {
-  localStorage.setItem('codigoFicha', item.CODIGO_FICHA);
+  localStorage.setItem('codigoFicha', item.FICHA);
   localStorage.setItem('nombrePrograma', item.PROGRAMA);
-  localStorage.setItem('nivelFormacion', item.NIVEL_FORMACION);
+  localStorage.setItem('nivelFormacion', item.NIVEL_DE_FORMACION);
   localStorage.setItem('estadoFicha', item.ESTADO_FICHA);
   alert('Ficha guardada correctamente');
 }
@@ -65,4 +62,5 @@ window.onload = () => {
   const user = localStorage.getItem('usuario');
   if (user) mostrarApp(user);
 };
+
 
